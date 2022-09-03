@@ -1,6 +1,6 @@
 package com.xpress.auth.test.security;
 
-import com.xpress.auth.test.SpringApplicationContext;
+import com.xpress.auth.test.context.SpringApplicationContext;
 
 public class SecurityConstants {
 	

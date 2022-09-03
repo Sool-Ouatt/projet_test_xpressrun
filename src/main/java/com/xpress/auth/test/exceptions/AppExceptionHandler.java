@@ -20,11 +20,8 @@ public class AppExceptionHandler {
 	public ResponseEntity<Object> handleUserServiceException(UserServiceException ex,
 			WebRequest request)
 	{
-		System.out.println("--Personnalisation-des-Exceptions--");
 		ex.printStackTrace();
-
 		ErrorMessage errorMessage = new ErrorMessage(402, ex.toString(), new Date());
-
 		return new ResponseEntity<>(errorMessage, new HttpHeaders(),
 				HttpStatus.INTERNAL_SERVER_ERROR);
 	}
@@ -32,12 +29,8 @@ public class AppExceptionHandler {
 	@ExceptionHandler(value = { Exception.class })
 	public ResponseEntity<Object> handleAnyException(Exception ex, WebRequest request)
 	{
-		System.out.println("--Personnalisation-des-Exceptions--");
-
 		ex.printStackTrace();
-
 		ErrorMessage errorMessage = new ErrorMessage(502, ex.toString(), new Date());
-
 		return new ResponseEntity<>(errorMessage, new HttpHeaders(),
 				HttpStatus.INTERNAL_SERVER_ERROR);
 	}

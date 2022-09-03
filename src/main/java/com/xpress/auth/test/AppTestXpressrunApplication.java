@@ -5,6 +5,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
+import com.xpress.auth.test.context.SpringApplicationContext;
 import com.xpress.auth.test.security.AppProperties;
 
 @SpringBootApplication

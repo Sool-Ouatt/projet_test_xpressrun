@@ -22,6 +22,8 @@ public class UserEntity implements Serializable {
 	private String nom;
 	private String email;
 	private String encryptedPassword;
+	//Pour savoir si l'utilisateur est bani ou pas
+	private Boolean isBanned = false;
 	
 	public Long getId() {
 		return id;
@@ -58,6 +60,12 @@ public class UserEntity implements Serializable {
 	}
 	public void setEncryptedPassword(String encryptedPassword) {
 		this.encryptedPassword = encryptedPassword;
+	}
+	public Boolean getIsBanned() {
+		return isBanned;
+	}
+	public void setIsBanned(Boolean isBanned) {
+		this.isBanned = isBanned;
 	}
 	
 }

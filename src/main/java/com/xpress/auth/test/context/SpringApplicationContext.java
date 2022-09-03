@@ -1,4 +1,4 @@
-package com.xpress.auth.test;
+package com.xpress.auth.test.context;
 
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;

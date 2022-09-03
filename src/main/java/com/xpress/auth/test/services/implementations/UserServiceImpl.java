@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.xpress.auth.test.dto.UserDTO;
 import com.xpress.auth.test.entities.UserEntity;
 import com.xpress.auth.test.exceptions.UserServiceException;
+import com.xpress.auth.test.repositories.BannedIpRepository;
 import com.xpress.auth.test.repositories.UserRepository;
 import com.xpress.auth.test.services.UserService;
 import com.xpress.auth.test.utils.ErrorMessages;
@@ -24,9 +25,13 @@ import com.xpress.auth.test.utils.UtilSecurity;
 
 @Service
 public class UserServiceImpl implements UserService {
+	
 	@Autowired
 	UserRepository userRepository;
-
+	
+	@Autowired
+	BannedIpRepository repositoryBannedIp;
+	
 	@Autowired
 	UtilSecurity utils;
 

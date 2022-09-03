@@ -17,10 +17,13 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.xpress.auth.test.SpringApplicationContext;
+import com.xpress.auth.test.context.SpringApplicationContext;
 import com.xpress.auth.test.dto.UserDTO;
+import com.xpress.auth.test.exceptions.UserServiceException;
 import com.xpress.auth.test.models.request.UserLoginRequest;
+import com.xpress.auth.test.services.BannedIpService;
 import com.xpress.auth.test.services.UserService;
+import com.xpress.auth.test.utils.ErrorMessages;
 
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -38,16 +41,20 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter
 	public Authentication attemptAuthentication(HttpServletRequest request,
 			HttpServletResponse response) throws AuthenticationException
 	{
+		BannedIpService ipService = (BannedIpService) SpringApplicationContext.getBean("bannedIpServiceImpl");
+		if (ipService.isBanned(request.getRemoteAddr()))
+		{
+			throw new UserServiceException(ErrorMessages.IP_ADD_BANNED.getErrorMessage());
+		}
 		try
 		{
 			UserLoginRequest userLoginRequestModel = new ObjectMapper()
 					.readValue(request.getInputStream(), UserLoginRequest.class);
-
+			
 			return authenticationManager.authenticate(
 					new UsernamePasswordAuthenticationToken(userLoginRequestModel.getEmail(),
 							userLoginRequestModel.getPassword(), new ArrayList<>()));
 		}
-
 		catch (Exception e)
 		{
 			throw new RuntimeException(e);
@@ -68,7 +75,6 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter
 		
 		UserService userService = (UserService) SpringApplicationContext.getBean("userServiceImpl");
 		UserDTO userDTO = userService.getUser(userName);
-		
 		response.addHeader(SecurityConstants.HEADER_STRING, SecurityConstants.TOKEN_PREFIX + token);
 		response.addHeader("UserID",userDTO.getUserId());
 

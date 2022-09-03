@@ -3,6 +3,8 @@ package com.xpress.auth.test.controllers;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -27,11 +29,12 @@ import com.xpress.auth.test.utils.RequestOperationResult;
 @RestController
 @RequestMapping("users")
 public class UserController {
+	
 	@Autowired
 	private UserService userService;
-
+	
 	@PostMapping
-	public UserResponse createUser(@RequestBody UserRequest userDetails) throws Exception
+	public UserResponse createUser(HttpServletRequest request, @RequestBody UserRequest userDetails) throws Exception
 	{
 		if (userDetails.getEmail().isEmpty())
 		{

@@ -9,7 +9,8 @@ public enum ErrorMessages {
 	AUTHENTICATION_FAILED("Authentication failed"), 
 	COUND_NOT_UPDATE_RECORD("Could not update the Record"), 
 	COUND_NOT_DELETE_RECORD("Could not delete the Record"), 
-	EMAIL_ADDRESS_NOT_VERIFIED("Email Address Could not be Verified");
+	EMAIL_ADDRESS_NOT_VERIFIED("Email Address Could not be Verified"),
+	IP_ADD_BANNED("Cet adresse ip est banni");
 
 	private String errorMessage;
 

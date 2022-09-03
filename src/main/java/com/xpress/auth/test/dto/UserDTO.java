@@ -14,6 +14,7 @@ public class UserDTO implements Serializable {
 	private String email;
 	private String password;
 	private String encryptedPassword;
+	private Boolean isBanned = false;
 	
 	public Long getId() {
 		return id;
@@ -56,5 +57,11 @@ public class UserDTO implements Serializable {
 	}
 	public void setEncryptedPassword(String encryptedPassword) {
 		this.encryptedPassword = encryptedPassword;
+	}
+	public Boolean getIsBanned() {
+		return isBanned;
+	}
+	public void setIsBanned(Boolean isBanned) {
+		this.isBanned = isBanned;
 	}
 }
