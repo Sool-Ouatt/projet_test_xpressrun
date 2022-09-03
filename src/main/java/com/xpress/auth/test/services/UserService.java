@@ -12,4 +12,5 @@ public interface UserService extends UserDetailsService{
 	public UserDTO updateUser(String userId,UserDTO userDTO);
 	public void deleteUser(String userId);
 	public List<UserDTO> getUsers();
+	public UserDTO banningUser(UserDTO userDTO);
 }

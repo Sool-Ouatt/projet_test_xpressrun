@@ -151,4 +151,14 @@ public class UserServiceImpl implements UserService {
 		}
 		return userDTOList;
 	}
+	
+	@Override
+	@Transactional
+	public UserDTO banningUser(UserDTO userDTO) {
+		UserEntity userEntityByUserId = userRepository.findByUserId(userDTO.getUserId());
+		userEntityByUserId.setIsBanned(true);
+		ModelMapper modelMapper = new ModelMapper();
+		UserDTO userRet = modelMapper.map(userEntityByUserId, UserDTO.class);
+		return userRet;
+	}
 }

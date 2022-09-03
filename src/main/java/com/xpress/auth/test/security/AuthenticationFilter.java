@@ -18,6 +18,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.xpress.auth.test.context.SpringApplicationContext;
+import com.xpress.auth.test.dto.BannedIpDTO;
 import com.xpress.auth.test.dto.UserDTO;
 import com.xpress.auth.test.exceptions.UserServiceException;
 import com.xpress.auth.test.models.request.UserLoginRequest;
@@ -41,11 +42,6 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter
 	public Authentication attemptAuthentication(HttpServletRequest request,
 			HttpServletResponse response) throws AuthenticationException
 	{
-		BannedIpService ipService = (BannedIpService) SpringApplicationContext.getBean("bannedIpServiceImpl");
-		if (ipService.isBanned(request.getRemoteAddr()))
-		{
-			throw new UserServiceException(ErrorMessages.IP_ADD_BANNED.getErrorMessage());
-		}
 		try
 		{
 			UserLoginRequest userLoginRequestModel = new ObjectMapper()
@@ -65,7 +61,7 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter
 	protected void successfulAuthentication(HttpServletRequest request,
 			HttpServletResponse response, FilterChain chain, Authentication authResult)
 			throws IOException, ServletException
-	{
+	{	
 		String userName = ((User) authResult.getPrincipal()).getUsername();
 
 		String token = Jwts.builder().setSubject(userName)
@@ -75,9 +71,27 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter
 		
 		UserService userService = (UserService) SpringApplicationContext.getBean("userServiceImpl");
 		UserDTO userDTO = userService.getUser(userName);
-		response.addHeader(SecurityConstants.HEADER_STRING, SecurityConstants.TOKEN_PREFIX + token);
-		response.addHeader("UserID",userDTO.getUserId());
-
+		
+		BannedIpService ipService = (BannedIpService) SpringApplicationContext.getBean("bannedIpServiceImpl");
+		// On verifie si l'utilisateur n'est pas banni
+		if(!userDTO.getIsBanned()) {
+			// si l'adress est banni, on banni l'utilisateur
+			if (ipService.isBanned(request.getRemoteAddr()))
+			{
+				userService.banningUser(userDTO);
+				throw new UserServiceException(ErrorMessages.IP_ADD_BANNED.getErrorMessage());
+			}
+			
+			response.addHeader(SecurityConstants.HEADER_STRING, SecurityConstants.TOKEN_PREFIX + token);
+			response.addHeader("UserID",userDTO.getUserId());
+		}else {
+			// si l'utilisateur était banni on banni la nouvelle adresse ip
+			BannedIpDTO ipBan = new BannedIpDTO();
+			ipBan.setAdresseIp(request.getRemoteAddr());
+			ipService.createBannedIp(ipBan);
+			throw new UserServiceException(ErrorMessages.USER_BANNED.getErrorMessage());
+		}
+		
 	}
 
 }
